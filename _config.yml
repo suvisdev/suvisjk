@@ -16,6 +16,8 @@ aux_links:
     - "https://github.com/suvisdev/suvisdev.cloud"
   "Demo":
     - "https://suvisdev.cloud"
+  "ATS":
+    - "https://ats.suvisdev.cloud"
 aux_links_new_tab: true
 
 heading_anchors: true
