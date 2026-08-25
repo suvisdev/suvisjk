@@ -2,7 +2,7 @@ title: suvisdev
 description: >-
   AI 영화 추천(Mova) · 반려견 산책 경로(Gildle) — 모듈러 모놀리식 풀스택 플랫폼
 baseurl: ""
-url: ""
+url: "https://jk.suvisdev.cloud"
 github_username: suvisdev
 
 theme: just-the-docs
