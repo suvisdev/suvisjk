@@ -1,0 +1,30 @@
+<footer>
+	<p class="footerText">SEUK Team &middot; 2026</p>
+	<div class="footerIcons">
+
+		{% if site.github_username %}
+			<a href="https://github.com/{{ site.github_username }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fab fa-github fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
+
+		{% if site.email %}
+			<a href="mailto:{{ site.email }}">
+				<span class="fa-stack fa-1x">
+					<i class="socialIconBack fas fa-circle fa-stack-2x"></i>
+					<i class="socialIconTop fas fa-envelope fa-stack-1x"></i>
+				</span>
+			</a>
+		{% endif %}
+
+	</div>
+	<div class="footerLinks">
+		<a href="{{ '/toc/' | relative_url }}">목차</a>
+		<a href="{{ '/mova/' | relative_url }}">Mova</a>
+		<a href="{{ '/gildle/' | relative_url }}">Gildle</a>
+		<a href="{{ '/devlog/' | relative_url }}">개발 로그</a>
+	</div>
+</footer>

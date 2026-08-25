@@ -1,0 +1,111 @@
+name: "suvisdev"
+tagline: "AI 영화 추천(Mova)과 반려견 산책 경로(Gildle)를 하나의 모듈러 모놀리식 플랫폼에 통합"
+period: "2026.07 ~ 2026.09 (약 10주)"
+team_size: "1명 (개인 프로젝트)"
+my_role: "풀스택 개발 · ML 파이프라인 · 인프라 · 데이터 수집"
+
+problem: >-
+  (1) 영화 추천: 수백 편의 신작 속에서 취향에 맞는 영화를 고르는 데 시간이 든다.
+  기존 협업 필터링은 콜드 스타트 문제가 있고, 리뷰는 사람이 직접 써야 한다.
+  Mova는 LoRA 파인튜닝 모델로 개인화 추천을 제공하고,
+  크롤링 데이터를 Gemini가 분석해 AI 리뷰와 별점을 자동 생성한다.
+  (2) 산책 경로: 반려견과 산책할 때 그늘·결빙·반려견 출입 가능 여부를 고려한
+  경로를 찾기 어렵다. Gildle은 OSM 보행 그래프에 환경 점수를 매겨
+  계절·상황별 최적 산책 경로를 계산한다.
+
+sub_projects:
+  - name: "Mova"
+    tagline: "AI 영화 추천 · 리뷰 · 랭킹"
+    description: >-
+      LoRA 파인튜닝 EXAONE-2.4B와 Gemini API 듀얼 백엔드로
+      개인화 영화 추천, AI 리뷰 자동 생성, 실시간 박스오피스 랭킹,
+      AI 챗봇, 개봉 예정작 알림을 제공하는 영화 플랫폼.
+  - name: "Gildle"
+    tagline: "반려견 산책 경로 추천"
+    description: >-
+      OSM 보행 그래프에 가로수(나무 그늘)·결빙 위험·반려견 친화도
+      3축 환경 점수를 매긴 뒤, A* 알고리즘으로 시즌별 최적 경로를
+      계산하는 산책 경로 추천 서비스.
+
+features:
+  - title: "AI 맞춤 영화 추천"
+    description: "LoRA 파인튜닝 EXAONE-2.4B와 Gemini API 듀얼 백엔드. 사용자 취향 학습 기반 개인화 추천, GPU 미가용 시 Gemini 자동 폴백(전환 8초)."
+  - title: "AI 리뷰 자동 생성"
+    description: "KOBIS 박스오피스·Google 뉴스·위키피디아 자동 크롤링 → Gemini가 평론가 톤 리뷰 작성. 수집 자료의 긍부정 반응을 종합해 별점 산정."
+  - title: "박스오피스 랭킹 · 개봉 예정작"
+    description: "KOFIC API로 일별·주간·월간 한국 박스오피스 집계. TMDB API로 개봉 예정작 자동 갱신, 월별 그룹핑."
+  - title: "영화 AI 챗봇"
+    description: "Gemini 기반 영화 추천·정보 대화. 사용자 시청 이력과 취향을 반영한 맥락 대화."
+  - title: "소셜 로그인 · 인증"
+    description: "Google·Kakao·Naver OAuth 2.0 통합 인증. JWT 토큰, 역할 권한(admin/user), IDOR 방어 전수 적용."
+  - title: "보행 그래프 경로 추천"
+    description: "osmnx로 추출한 영등포구 도보 네트워크 1,600+ 엣지를 Leaflet 지도에 시각화. 나무 그늘·결빙 위험·반려견 친화도 3축 점수 기반 A* 최적 경로."
+  - title: "시즌 모드 · 구간별 시각화"
+    description: "봄/가을(그늘 우선)·겨울(결빙 회피) 모드에 따라 가중치 자동 전환. 경로를 점수별 색상으로 구간 표시, 평균 점수 요약 패널."
+
+tech:
+  - category: backend
+    items: ["Python 3.12", "FastAPI", "PostgreSQL (Neon)", "Redis", "SQLAlchemy 2.0 Async"]
+  - category: frontend
+    items: ["Next.js 16", "TypeScript 5.7", "React 19", "Tailwind CSS 4", "shadcn/ui", "Leaflet"]
+  - category: mobile
+    items: ["Flutter", "Dart"]
+  - category: ai
+    items: ["EXAONE-2.4B AWQ (LoRA fine-tuning)", "Google Gemini API", "sentence-transformers"]
+  - category: data
+    items: ["TMDB API", "KOFIC/KOBIS API", "서울 열린데이터 (가로수·결빙)", "OpenStreetMap / osmnx"]
+  - category: infra
+    items: ["Docker Compose", "AWS (EC2 · S3)", "Cloudflare Tunnel", "GitHub"]
+
+architecture:
+  image: "/assets/img/architecture.svg"
+  description: >-
+    모듈러 모놀리식 + 스타 토폴로지. ontology(Hub)가 공통 크롤링·AI 파이프라인·이벤트 버스를,
+    mova·gildle·viewer(Spoke)가 각 도메인 로직을 담당한다.
+    Next.js 프론트가 FastAPI(EC2·Docker) API를 호출하고,
+    영화 추천은 LoRA 파인튜닝 서버(Cloudflare Tunnel)와 Gemini API 듀얼 백엔드로 서빙,
+    산책 경로는 OSM 그래프 + A* 알고리즘으로 계산한다.
+    Flutter 모바일 앱은 동일 API를 공유한다.
+
+erd:
+  image: "/assets/img/erd.png"
+  description: >-
+    Mova: movies·reviews·rankings·picks·chat 등 영화 도메인 테이블과
+    users·groups 인증 테이블. Gildle: route_edges·scored_edges 보행 그래프 테이블.
+    두 도메인이 users 테이블을 공유하되, ORM 메타데이터는 앱별로 분리.
+
+challenges:
+  - title: "Docker .env 미설정으로 DB 전면 장애"
+    situation: "docker compose up -d 시 --env-file suvisdev/.env를 빠뜨려 DB 컨테이너가 빈 자격증명으로 재생성"
+    cause: "compose 파일의 ${POSTGRES_USER} 등이 빈 문자열로 치환되며 기존 볼륨과 인증 불일치"
+    solution: "docker compose --env-file suvisdev/.env 명시를 CLAUDE.md 필수 규칙으로 등록, 팀 전체 적용"
+    result: "반복 사고 방지. 이후 동일 장애 0건"
+  - title: "LoRA 서버 ↔ Gemini 듀얼 백엔드 폴백"
+    situation: "GPU 노트북(LoRA 서버)이 꺼지거나 Cloudflare Tunnel이 끊기면 추천 API 전면 장애"
+    cause: "EXAONE-2.4B AWQ 모델이 로컬 GPU에서만 서빙 가능, EC2에는 GPU 없음"
+    solution: "RECOMMENDATION_BACKEND 환경변수로 lora/gemini 전환, docker compose 재기동 한 번으로 폴백(왕복 8초)"
+    result: "GPU 미가용 시에도 추천 서비스 무중단 제공"
+  - title: "IDOR 취약점 5건 전수 수정"
+    situation: "user_id를 경로·바디 파라미터로 받아 다른 사용자의 리소스에 접근 가능"
+    cause: "초기 개발 시 user_id를 클라이언트 입력으로 신뢰, 토큰 기반 신원 확인 누락"
+    solution: "전수 조사로 5건(mypage·profile·watchlist·picks·chat) 식별 후 전부 JWT 토큰 기반으로 전환"
+    result: "모든 리소스 접근에 소유권 검증 적용, IDOR 취약점 0건"
+  - title: "EC2 30GB 디스크 부족 반복"
+    situation: "backend·auth 컨테이너가 동일한 무거운 Dockerfile(torch+CUDA)인데 이미지가 따로 태깅"
+    cause: "중복 레이어가 해제되지 않아 빌드 중 디스크 풀 발생"
+    solution: "docker builder prune -a 후 순차 빌드, 근본 해결(이미지 통합)은 백로그에 등록"
+    result: "빌드 성공률 안정화, 디스크 사용량 모니터링 추가"
+
+links:
+  repo: "https://github.com/suvisdev/suvisdev.cloud"
+  demo: "https://suvisdev.cloud"
+
+screenshots:
+  - path: "/assets/img/screenshot-mova-main.png"
+    caption: "Mova 메인 — AI 추천 영화 목록"
+  - path: "/assets/img/screenshot-mova-ranking.png"
+    caption: "Mova 박스오피스 랭킹"
+  - path: "/assets/img/screenshot-gildle-map.png"
+    caption: "Gildle 보행 그래프 지도 — 구간별 점수 시각화"
+  - path: "/assets/img/screenshot-gildle-route.png"
+    caption: "Gildle 경로 추천 — 시즌 모드 + 색상 코딩"

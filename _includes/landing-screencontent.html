@@ -1,0 +1,15 @@
+{% for file in site.static_files %}
+    {% if file.path contains 'assets/screenshot/' %}
+        {% unless file.path contains 'yourscreenshot.png' %}
+        <script>
+            (function() {
+                var img = document.querySelector(".iphoneScreen");
+                if (img) {
+                    img.src = "{{ file.path | relative_url }}";
+                    img.classList.remove("hidden");
+                }
+            })();
+        </script>
+        {% endunless %}
+    {% endif %}
+{% endfor %}
