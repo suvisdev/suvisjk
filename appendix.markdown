@@ -2,7 +2,7 @@
 layout: default
 title: 부록
 permalink: /appendix/
-nav_order: 10
+nav_order: 9
 ---
 
 # 부록

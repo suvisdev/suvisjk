@@ -39,15 +39,7 @@ nav_order: 1
 - [아키텍처 (Clean Architecture + DDD)](/gildle/#아키텍처-clean-architecture--ddd)
 - [트러블슈팅](/gildle/#트러블슈팅)
 
-## 5. [Arda — 채용 지원자 관리(ATS)](/arda/)
-
-- [해결하려는 문제](/arda/#해결하려는-문제)
-- [주요 기능](/arda/#주요-기능)
-- [내 파트 — AI 채용 에이전트 "아르"](/arda/#내-파트--ai-채용-에이전트-아르)
-- [아키텍처](/arda/#아키텍처) · [ERD](/arda/#erd)
-- [기술 스택](/arda/#기술-스택)
-
-## 6. [개발 수행 지침](/guidelines/)
+## 5. [개발 수행 지침](/guidelines/)
 
 - [아키텍처 원칙](/guidelines/#아키텍처-원칙)
   - Clean Architecture + Hexagonal
@@ -56,7 +48,7 @@ nav_order: 1
 - [개발 표준 및 산출물](/guidelines/#개발-표준-및-산출물)
 - [품질 관리 및 테스트](/guidelines/#품질-관리-및-테스트)
 
-## 7. [개발 일정](/schedule/)
+## 6. [개발 일정](/schedule/)
 
 - [단계별 개발 일정](/schedule/#단계별-개발-일정)
   - Sprint 1 — 기반 구축
@@ -66,11 +58,11 @@ nav_order: 1
   - Sprint 5 — 고도화
 - [위험 관리 방안](/schedule/#위험-관리-방안)
 
-## 8. [부록](/appendix/)
+## 7. [부록](/appendix/)
 
 - [용어 정의](/appendix/#용어-정의)
 - [관련 서식](/appendix/#관련-서식)
 
-## 9. [개발 진행 현황](/devlog/)
+## 8. [개발 진행 현황](/devlog/)
 
-## 10. [미결 항목](/issues/)
+## 9. [미결 항목](/issues/)

@@ -2,7 +2,7 @@
 layout: default
 title: 미결 항목
 permalink: /issues/
-nav_order: 11
+nav_order: 10
 ---
 
 # 미결 항목

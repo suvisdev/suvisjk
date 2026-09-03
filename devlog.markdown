@@ -2,7 +2,7 @@
 layout: default
 title: 개발 로그
 permalink: /devlog/
-nav_order: 9
+nav_order: 8
 ---
 
 # 개발 진행 현황
