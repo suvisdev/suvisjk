@@ -1,0 +1,94 @@
+# =====================================================================
+# 팀 공통 프로젝트 데이터 파일 — Arda (ATS, 채용 지원자 관리 시스템)
+# ---------------------------------------------------------------------
+# ⚠️ 이 파일은 팀 공통 파일입니다. 값 수정 금지.
+#    개인 소개(이름, 한 줄 소개, GitHub/블로그 링크)는 각자 _config.yml에.
+#    예외: my_role 은 각자 자기 역할로 수정합니다.
+#    사용법은 TEAM_README.md 참고.
+# =====================================================================
+# (개인 사이트 참고: _data/project.yml 슬롯을 개인 프로젝트가 쓰고 있어 파일명만 arda.yml로 배치 — 값은 팀 원본 그대로, my_role만 규칙대로 본인 역할.)
+
+name: "Arda"
+tagline: "채용 지원자 관리 시스템(ATS) — 공고 등록부터 지원 접수, 단계별 심사·평가, 합불 통보까지"
+period: "2026.08 ~ 2026.09 (4주, 실작업일 약 20일)"
+team_size: "5명"
+my_role: "에이전트 파트 — 아르(도구 호출 에이전트: 읽기 3·쓰기 3, 쓰기 확인 강제) · 지원자 AI 요약 · RAG 시맨틱 검색·프롬프트 체이닝(ADR-0021·0022) · 일정 도구·권한 분리"
+
+# 해결하려는 문제
+problem: >-
+  채용담당자가 공고를 올리고, 지원자가 외부 링크로 지원서·이력서를 제출하면,
+  담당자·면접관이 칸반 보드에서 단계별로 심사·평가하고, 단계 변경 시 지원자에게
+  메일이 자동 발송된다. 흩어져 있던 채용 과정(접수 → 서류 검토 → 면접 → 합불 통보)을
+  하나의 시스템으로 묶고, 모든 단계 이동에 이력과 평가 기록이 남게 한다.
+
+# 주요 기능
+features:
+  - title: "지원자 칸반 보드"
+    description: "카드를 드래그해 단계 이동(지원 접수 → 서류 검토 → 면접 → 최종 합격/불합격). 모든 이동은 단계 이력으로 기록."
+  - title: "단계 변경 자동 메일"
+    description: "단계 이동 시 지원자에게 메일 자동 발송. SQS 큐 + 워커로 비동기 처리, 실패 시 재시도."
+  - title: "공고 관리 · 공개 지원 링크"
+    description: "채용 공고 등록·관리. 지원자는 로그인 없이 외부 공개 링크로 지원서를 제출."
+  - title: "이력서 S3 업로드"
+    description: "presigned URL로 브라우저에서 S3에 직접 업로드 — 파일이 API 서버를 거치지 않는다."
+  - title: "지원자 검색·필터"
+    description: "이름·학교·기술스택 검색과 필터. 더미 데이터 10만 건 기준으로 인덱스 튜닝."
+  - title: "평가 · 면접관 배정"
+    description: "면접관 배정, 단계별 점수·코멘트 평가 기록."
+  - title: "인증 · 권한"
+    description: "JWT 인증, 역할 3종(관리자 / 채용담당자 / 면접관)."
+
+# 기술 스택
+tech:
+  - category: backend
+    items: ["Python", "FastAPI", "PostgreSQL"]
+  - category: frontend
+    items: ["React", "Vite", "TypeScript"]
+  - category: infra
+    items: ["Docker", "AWS (EC2 · S3 · SES · SQS)", "GitHub Actions", "Vercel"]
+  - category: ai
+    items: ["(여유 시 범위) 이력서 구조화 추출 — 합불 확정은 항상 사람 (ADR-0003)"]
+
+# 아키텍처 다이어그램
+architecture:
+  image: "/assets/img/architecture.svg"
+  description: >-
+    React(Vercel) 프론트가 FastAPI(EC2 · Docker) API를 호출한다.
+    이력서는 presigned URL로 브라우저에서 S3에 직접 업로드하고,
+    단계 변경 메일은 SQS 큐에 넣어 워커가 SES로 비동기 발송·재시도한다.
+    배포는 GitHub Actions CI/CD.
+
+# ERD (테이블 정의)
+erd:
+  image: "/assets/img/erd.png"
+  description: >-
+    지원서(applications)를 축으로 한 9개 테이블 —
+    공고(job_postings)·내부 사용자(users)와,
+    단계 이력·평가·담당자 메모·이력서 파일·메일 발송 로그·면접관 배정.
+
+# 트러블슈팅 (면접 답변용: 문제 상황 → 원인 → 해결 → 결과)
+# 실제 겪은 일만 기록한다. 프로젝트 진행하며 채울 것.
+challenges:
+  - title: "TODO: 트러블슈팅 1 제목"
+    situation: "TODO: 문제 상황"
+    cause: "TODO: 원인"
+    solution: "TODO: 해결"
+    result: "TODO: 결과"
+  - title: "TODO: 트러블슈팅 2 제목"
+    situation: "TODO: 문제 상황"
+    cause: "TODO: 원인"
+    solution: "TODO: 해결"
+    result: "TODO: 결과"
+
+# 링크
+links:
+  repo: "https://github.com/Team-Seuk/Arda"  # private — 공개 전환 여부는 팀 결정
+  demo: ""  # TODO: 배포 후 데모 URL
+  docs: ""  # TODO: 공개 문서 URL (있으면)
+
+# 스크린샷 — 현재는 기획 단계 동작 프로토타입 캡처. 실서비스 완성 후 교체.
+screenshots:
+  - path: "/assets/img/screenshot-01.png"
+    caption: "지원자 칸반 보드 (동작 프로토타입) — 드래그로 단계 이동, 단계별 인원 현황·검색 필터"
+  - path: "/assets/img/screenshot-02.png"
+    caption: "모바일 (동작 프로토타입) — 단계 탭 + 리스트 뷰, 공개 지원 폼(S3 직접 업로드 진행률)"

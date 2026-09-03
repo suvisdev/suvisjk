@@ -2,7 +2,7 @@
 layout: default
 title: 주요 개발 수행 지침
 permalink: /guidelines/
-nav_order: 6
+nav_order: 7
 ---
 
 # 주요 개발 수행 지침

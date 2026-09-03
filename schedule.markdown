@@ -2,7 +2,7 @@
 layout: default
 title: 개발 일정
 permalink: /schedule/
-nav_order: 7
+nav_order: 8
 ---
 
 # 개발 일정 및 추진 체계

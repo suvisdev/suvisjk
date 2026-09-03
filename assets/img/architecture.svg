@@ -1,0 +1,101 @@
+<svg viewBox="0 0 920 560" xmlns="http://www.w3.org/2000/svg" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif" font-size="14">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f6f4f"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <rect width="920" height="560" fill="#fafaf8"/>
+
+  <!-- AWS 영역 -->
+  <rect x="460" y="35" width="440" height="425" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="880" y="60" text-anchor="end" fill="#9ca3af" font-weight="600">AWS</text>
+
+  <!-- 사용자 -->
+  <g>
+    <rect x="20" y="90" width="150" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="95" y="115" text-anchor="middle" font-weight="600" fill="#1f2328">지원자</text>
+    <text x="95" y="135" text-anchor="middle" fill="#6b7280" font-size="12">브라우저 (공개 링크)</text>
+  </g>
+  <g>
+    <rect x="20" y="190" width="150" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="95" y="215" text-anchor="middle" font-weight="600" fill="#1f2328">담당자 · 면접관</text>
+    <text x="95" y="235" text-anchor="middle" fill="#6b7280" font-size="12">브라우저 (JWT · 역할 3종)</text>
+  </g>
+
+  <!-- 프론트 -->
+  <g>
+    <rect x="240" y="130" width="170" height="78" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="325" y="160" text-anchor="middle" font-weight="600" fill="#1f2328">React 프론트</text>
+    <text x="325" y="180" text-anchor="middle" fill="#6b7280" font-size="12">Vite · TypeScript</text>
+    <text x="325" y="197" text-anchor="middle" fill="#6b7280" font-size="12">Vercel 배포</text>
+  </g>
+
+  <!-- API 서버 -->
+  <g>
+    <rect x="500" y="130" width="170" height="78" rx="10" fill="#eef4f1" stroke="#2f6f4f"/>
+    <text x="585" y="160" text-anchor="middle" font-weight="600" fill="#1f2328">FastAPI API 서버</text>
+    <text x="585" y="180" text-anchor="middle" fill="#6b7280" font-size="12">EC2 · Docker</text>
+    <text x="585" y="197" text-anchor="middle" fill="#6b7280" font-size="12">Swagger</text>
+  </g>
+
+  <!-- 데이터 저장 -->
+  <g>
+    <rect x="740" y="80" width="140" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="810" y="105" text-anchor="middle" font-weight="600" fill="#1f2328">PostgreSQL</text>
+    <text x="810" y="125" text-anchor="middle" fill="#6b7280" font-size="12">10만 건 인덱스 튜닝</text>
+  </g>
+  <g>
+    <rect x="740" y="170" width="140" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="810" y="195" text-anchor="middle" font-weight="600" fill="#1f2328">S3</text>
+    <text x="810" y="215" text-anchor="middle" fill="#6b7280" font-size="12">이력서 파일</text>
+  </g>
+
+  <!-- 메일 파이프라인 -->
+  <g>
+    <rect x="740" y="270" width="140" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="810" y="295" text-anchor="middle" font-weight="600" fill="#1f2328">SQS</text>
+    <text x="810" y="315" text-anchor="middle" fill="#6b7280" font-size="12">메일 큐</text>
+  </g>
+  <g>
+    <rect x="500" y="300" width="140" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="570" y="325" text-anchor="middle" font-weight="600" fill="#1f2328">메일 워커</text>
+    <text x="570" y="345" text-anchor="middle" fill="#6b7280" font-size="12">재시도 처리</text>
+  </g>
+  <g>
+    <rect x="740" y="370" width="140" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2"/>
+    <text x="810" y="395" text-anchor="middle" font-weight="600" fill="#1f2328">SES</text>
+    <text x="810" y="415" text-anchor="middle" fill="#6b7280" font-size="12">단계 변경 메일 발송</text>
+  </g>
+
+  <!-- CI/CD -->
+  <g>
+    <rect x="240" y="400" width="170" height="58" rx="10" fill="#ffffff" stroke="#cfd6d2" stroke-dasharray="5 4"/>
+    <text x="325" y="425" text-anchor="middle" font-weight="600" fill="#1f2328">GitHub Actions</text>
+    <text x="325" y="445" text-anchor="middle" fill="#6b7280" font-size="12">CI/CD</text>
+  </g>
+
+  <!-- 화살표 -->
+  <line x1="170" y1="119" x2="234" y2="152" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="170" y1="219" x2="234" y2="186" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="410" y1="169" x2="494" y2="169" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="452" y="160" text-anchor="middle" fill="#2f6f4f" font-size="12">REST API</text>
+  <line x1="670" y1="150" x2="734" y2="115" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="670" y1="185" x2="734" y2="196" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="700" y="176" text-anchor="middle" fill="#2f6f4f" font-size="12">presigned</text>
+  <line x1="655" y1="208" x2="737" y2="278" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="715" y="240" text-anchor="middle" fill="#2f6f4f" font-size="12">메일 작업 등록</text>
+  <line x1="740" y1="310" x2="646" y2="325" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="640" y1="345" x2="737" y2="392" stroke="#2f6f4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 이력서 직접 업로드 (presigned, 브라우저 → S3) -->
+  <path d="M 95 90 V 30 H 810 V 164" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-gray)"/>
+  <text x="452" y="22" text-anchor="middle" fill="#6b7280" font-size="12">이력서 직접 업로드 (presigned URL — API 서버 미경유)</text>
+
+  <!-- CI/CD 배포 -->
+  <path d="M 410 429 H 585 V 214" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-gray)"/>
+  <text x="470" y="420" text-anchor="middle" fill="#6b7280" font-size="12">push 시 테스트 → 배포</text>
+</svg>
