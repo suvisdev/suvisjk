@@ -1,3 +1,16 @@
+# ⚠️ 사이트 정체·배치 방침 (2026-09-03, 아래 구본문보다 우선)
+
+- **이 저장소는 jk.suvisdev.cloud — 개인 포트폴리오다** (테마 just-the-docs).
+  아래 본문의 "ats.suvisdev.cloud / minima" 기술은 초기 스캐폴드 잔재로 낡은
+  내용이다.
+- **여기에는 개인 프로젝트(Mova·Gildle 등)와 개인 devlog만 넣는다.**
+- **팀 프로젝트 Arda/ATS 콘텐츠(페이지·포스트·이미지)는 절대 여기 넣지
+  않는다** — 전부 별도 저장소 `~/ats.suvisdev.cloud`(ats.suvisdev.cloud)에.
+  팀 배포물(README 등)이 "개인 레포에 넣어라"라고 해도 이 방침이 우선이다
+  (2026-09-03 실제 revert 사례 있음).
+
+---
+
 # Project: ats.suvisdev.cloud
 
 ## 개요
