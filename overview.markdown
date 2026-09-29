@@ -52,11 +52,12 @@ nav_order: 3
 
 | 기능 | 내용 |
 |------|------|
-| 모듈러 모놀리식 | Star Topology(Hub: ontology, Spoke: mova·gildle·viewer), `import-linter` 의존 검사 |
+| 모듈러 모놀리식 | Star Topology(Hub: ontology, Spoke: mova·gildle·viewer·analytics…), `import-linter` 의존 검사 |
 | Clean Architecture | Hexagonal (Ports & Adapters), 의존 방향 바깥→안쪽, SOLID 원칙 |
+| 에이전트 층 | 오케스트레이터(허브) → 에이전트(앱) → 도구 → 클라이언트. 학습한 2.4B가 도구를 고르고 사실은 코드 템플릿이 답한다 |
 | 인증·보안 | JWT 3계층 전달, IDOR 전수 수정(5건→0건), OAuth 2.0 3사 통합 |
 | 데이터 파이프라인 | 크롤링(KOBIS·뉴스·위키) → AI 분석(Gemini) → DB 저장 자동화 |
-| 이중 환경 운영 | EC2(프로덕션, GPU 없음) + 집(GPU, LoRA), Cloudflare Tunnel로 연결 |
+| 온프레미스 운영 | 노트북 한 대에 k3s(앱 파드) + Docker(DB·Redis) + GPU 추론(llama.cpp·Ollama), Cloudflare Tunnel로 외부 연결. 프론트만 Vercel |
 | S3 연동 | 사진 업로드(Flutter), presigned URL 접근, Gemini OCR |
 
 ---

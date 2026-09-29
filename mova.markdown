@@ -42,23 +42,44 @@ nav_order: 4
 
 ## AI 파이프라인
 
-### 추천 엔진 — 듀얼 백엔드
+### 채팅 판단 에이전트 (v9, 2026-09-29)
 
 ```
-사용자 취향 데이터
+발화 + 최근 대화
     │
-    ├─ GPU 가용 ──→ LoRA 서버 (EXAONE-2.4B AWQ, :8200)
-    │                    │
-    │                    └─→ Cloudflare Tunnel ──→ EC2 API
+    ▼
+MovaChatAgent ── 판단 모델(EXAONE 3.5 2.4B LoRA, GGUF, Ollama) ──→ 다음 행동 하나
+    │            <tool_call>{"name":"get_movie_details","arguments":{"title":"…"}}</tool_call> | FINAL
+    ├─ 데이터 도구: search_movie · get_movie_details · now_showing   → 결과를 붙여 재판단(≤3단계)
+    └─ 터미널 도구: recommend_movies · showtimes · where_to_watch     → 기존 추천·예매 트랙 실행
     │
-    └─ GPU 미가용 ──→ Gemini API (폴백)
-                         │
-                         └─→ EC2 API
+    ▼
+답변: 사실(출연진·시간표·상영작·OTT)은 코드 템플릿 · 문장은 추천 이유·리뷰 요약만 LLM
 ```
 
-- `RECOMMENDATION_BACKEND` 환경변수로 `lora` ↔ `gemini` 전환
-- 전환 왕복 약 8초 (docker compose 재기동)
-- LoRA 서버: systemd 서비스, WSL2 GPU (RTX)
+- 왜 바꿨나: 6칸 슬롯(intent·title·region·time·chain·followup)에 자리가 없는 질문(출연진, 직전
+  카드 전체, 현재 상영작)이 전부 오답이었고, 발화에 없는 제목을 지어내는 일이 있었다.
+- 학습 데이터는 템플릿 합성 1,600행(교사 비용 0원). 평가셋 66(실사용 대화 17 포함)에서
+  **v9 62 · 운영 7.8B 59 · 학습 전 2.4B 55**. 코랩(fp16)보다 노트북 GGUF 채점이 높게 나오는
+  일이 반복돼 내보내기 판단은 GGUF 재채점 기준.
+- 가드는 학습이 아니라 코드: 제목·지역 근거, 반복 호출 차단, 호출 예산.
+
+### 추천 엔진 — LoRA + Gemini 폴백
+
+```
+추천 요청 (에이전트 recommend_movies)
+    │
+    ▼
+RAG 후보 (pgvector HNSW, hub_knowledge) + 태그 실매칭 → 품질 하한·시리즈당 1편
+    │
+    ├─ lora-server :8200 (EXAONE 3.5 2.4B LoRA, llama.cpp GGUF Q5_K_M, 노트북 GPU)
+    └─ 실패·서킷 오픈 시 Gemini API 폴백 (자동, 60초 쿨다운 후 복귀)
+```
+
+- 학습은 Colab(L4), 어댑터 병합 → GGUF 양자화까지 노트북에서 완결. 운영 회귀 하네스
+  28질의·멀티턴 17장면으로 매 회차 전후 비교.
+- Gemini 블라인드 비교(2026-09-29): 추천 픽 27건 중 Gemini 12·EXAONE 3·동률 12 — 패인은
+  "3편을 채우려 주제 밖 작품을 끼움". 다음 학습 회차의 목표다.
 
 ### AI 리뷰 생성 파이프라인
 
@@ -88,12 +109,12 @@ KOBIS 일별 박스오피스 ──→ 영화 제목 리스트
 
 | 구분 | 기술 |
 |------|------|
-| 백엔드 | Python 3.12 · FastAPI · PostgreSQL (Neon) · Redis · SQLAlchemy 2.0 Async |
+| 백엔드 | Python 3.12 · FastAPI · PostgreSQL 16 + pgvector · Redis · SQLAlchemy 2.0 Async |
 | 프론트엔드 | Next.js 16 · TypeScript 5.7 · React 19 · Tailwind CSS 4 · shadcn/ui |
 | 모바일 | Flutter · Dart |
-| AI/ML | EXAONE-2.4B AWQ (LoRA) · Google Gemini API |
-| 데이터 | TMDB API · KOFIC/KOBIS API · Google News · 위키피디아 |
-| 인프라 | Docker Compose · AWS EC2 · AWS S3 · Cloudflare Tunnel |
+| AI/ML | EXAONE 3.5 2.4B LoRA(추천·판단 에이전트) · EXAONE 3.5 7.8B(이해·잡담) · Google Gemini(폴백·리뷰 요약) · pgvector RAG |
+| 데이터 | TMDB API · KOFIC/KOBIS API · 카카오 로컬(영화관) · 롯데시네마 시간표 · Google News · 위키피디아 |
+| 인프라 | 노트북 k3s · Docker(DB·Redis) · llama.cpp · Ollama · Cloudflare Tunnel · AWS S3 |
 
 ---
 

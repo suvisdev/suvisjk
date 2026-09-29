@@ -59,12 +59,12 @@ OSM 보행 그래프에 가로수(나무 그늘)·결빙 위험·반려견 친�
 
 | 구분 | 기술 |
 |------|------|
-| **백엔드** | Python 3.12 · FastAPI · PostgreSQL (Neon) · Redis · SQLAlchemy 2.0 Async |
-| **프론트엔드** | Next.js 16 · TypeScript 5.7 · React 19 · Tailwind CSS 4 · shadcn/ui · Leaflet |
-| **모바일** | Flutter · Dart · 카카오 로그인 SDK |
-| **AI/ML** | EXAONE-2.4B AWQ (LoRA fine-tuning) · Google Gemini API · sentence-transformers |
-| **데이터** | TMDB API · KOFIC/KOBIS API · 서울 열린데이터 (가로수·결빙) · OpenStreetMap / osmnx |
-| **인프라** | Docker Compose · AWS EC2 · AWS S3 · Cloudflare Tunnel · Vercel · nginx |
+| **백엔드** | Python 3.12 · FastAPI · PostgreSQL 16 + pgvector · Redis · SQLAlchemy 2.0 Async · Alembic |
+| **프론트엔드** | Next.js 16 · TypeScript 5.7 · React 19 · Tailwind CSS 4 · shadcn/ui · 네이버 지도 JS v3 |
+| **모바일** | Flutter · Dart · 카카오 로그인 SDK · 네이버 지도 SDK |
+| **AI/ML** | EXAONE 3.5 2.4B LoRA(추천 GGUF Q5_K_M · 판단 에이전트 v9) · EXAONE 3.5 7.8B(이해·홈 채팅) · Google Gemini(폴백·리뷰 요약) · pgvector HNSW RAG |
+| **데이터** | TMDB API · KOFIC/KOBIS API · 카카오 로컬 API · 브이월드 건물 · OpenStreetMap / osmnx · SRTM 고도 |
+| **인프라** | 노트북 온프레미스 k3s(backend·auth·cloudflared 파드) · Docker(db·redis) · llama.cpp lora-server · Ollama · Cloudflare Tunnel · Vercel · AWS S3 |
 
 ---
 
@@ -81,27 +81,34 @@ OSM 보행 그래프에 가로수(나무 그늘)·결빙 위험·반려견 친�
 │        └─────────── HTTPS ────────────┘                  │
 │                       │                                  │
 ├───────────────────────┼──────────────────────────────────┤
-│              nginx (api.suvisdev.cloud)                   │
+│      Cloudflare Tunnel (api. / auth.suvisdev.cloud)       │
 │                       │                                  │
+│   ─────────── 노트북 온프레미스 (k3s) ───────────          │
 │           ┌───────────┼───────────┐                      │
 │           ▼           ▼           ▼                      │
-│      backend:8000  auth:9000  lora_server:8200           │
-│           │                   (Cloudflare Tunnel)        │
+│      backend 파드  auth 파드  Traefik 인그레스             │
+│           │                                              │
 ├───────────┼──────────────────────────────────────────────┤
 │      FastAPI  (모듈러 모놀리식 · Star Topology)            │
 │                                                          │
-│           mova    gildle    viewer    media               │
-│             \       |        /        /     (Spoke)       │
-│              ★  ontology  ★              (Hub)            │
-│             /       |        \                           │
-│         titanic  inception   ...                         │
+│         mova   gildle   viewer   analytics   media        │
+│            \      |       /         /       (Spoke)       │
+│             ★   ontology   ★                (Hub)         │
+│            /      |       \                              │
+│      dispatch  execsuite  titanic  contents               │
 │                                                          │
 │      ─────────── core.* (공유 인프라) ──────────           │
-│         security · matrix(S3) · lol(LoRA)                │
+│      security · matrix(DB·S3) · lol(OllamaClient·LoRA)    │
 ├──────────────────────────────────────────────────────────┤
-│        PostgreSQL (Neon)        Redis         S3         │
+│  PostgreSQL 16 + pgvector · Redis (도커)   S3 (AWS)        │
+│  lora-server :8200 (llama.cpp GGUF, GPU)  Ollama :11434   │
 └──────────────────────────────────────────────────────────┘
 ```
+
+프로덕션은 **노트북 한 대의 온프레미스**다(2026-09-07 k3s 컷오버). 백엔드(CPU)와 GPU 추론
+(lora-server·Ollama)이 같은 기계 안에서 통신하고, 외부 요청은 Cloudflare Tunnel이 노트북까지
+가져온다. 클라우드 분리안은 검토 뒤 기각했다 — 백엔드가 유휴에도 2GB RAM이라 무료 인스턴스에
+들어가지 않고, 백엔드↔GPU 지연이 늘어난다(2026-09-29).
 
 ### 모듈러 모놀리식 · Star Topology
 
@@ -117,6 +124,24 @@ OSM 보행 그래프에 가로수(나무 그늘)·결빙 위험·반려견 친�
 | Spoke → Spoke (직접) | ❌ 금지 |
 | Hub → Spoke | ❌ 금지 |
 | Spoke · Hub → core.* | ✅ |
+
+### 두뇌 층 — 오케스트레이터 · 에이전트 · 도구 · 클라이언트 (2026-09-29)
+
+LLM이 판단하는 자리에 이름을 네 층으로 고정했다. "오케스트레이터"는 전체 두뇌 하나에만 쓴다.
+
+```
+오케스트레이터 (Orchestrator)   ← 전체 두뇌 · 허브(ontology)에 하나 (예정)
+ └ 에이전트 (Agent)             ← 앱 두뇌 · 앱마다 하나 — MovaChatAgent(v9) · GildleWalkAgent(예정)
+    └ 도구 (Tool)               ← 판단 없이 정해진 일 — search_movie · showtimes · plan_walk …
+       └ 클라이언트 (Client)    ← 바깥 세계 연결 — OllamaClient · Kakao · KOFIC · DB 리포지토리
+```
+
+- 판단 루프(`AgentLoop`)·행동 프로토콜·`JudgePort`는 허브의 공용 부품이다. 앱은 도구 목록과
+  시스템 프롬프트만 준다. 루프가 코드로 막는 것: 인자 근거(발화·대화·결과에 없는 제목·지역 차단),
+  같은 호출 반복, 호출 예산(3단계).
+- 허브는 스포크를 import하지 않으므로, 앱은 기동 때 허브 레지스트리에 자기 에이전트를 등록하고
+  오케스트레이터는 그 목록만 본다(예정).
+- 구 `SuvisdevOrchestrator`는 실체가 Ollama HTTP 클라이언트라 `OllamaClient`로 개명했다.
 
 ### Clean Architecture + Hexagonal (Ports & Adapters)
 
