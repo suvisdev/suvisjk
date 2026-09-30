@@ -12,7 +12,7 @@ nav_order: 2
 | 항목 | 내용 |
 |------|------|
 | 프로젝트명 | **suvisdev** — AI 영화 추천(Mova) · 반려견 산책 경로(Gildle) 통합 플랫폼 |
-| 개발 기간 | 2026.07 ~ 2026.09 (약 10주) |
+| 개발 기간 | 2026.07.08 ~ 2026.09.30 (약 12주) — v1 마감 2026-09-30 |
 | 개발 인원 | 1명 (개인 프로젝트) |
 | 역할 | 풀스택 개발 · ML 파이프라인 · 인프라 · 데이터 수집 |
 | 레포지토리 | [github.com/suvisdev/suvisdev.cloud](https://github.com/suvisdev/suvisdev.cloud) |
@@ -22,9 +22,9 @@ nav_order: 2
 
 ## 프로젝트 배경
 
-**영화 추천** — 수백 편의 신작 속에서 취향에 맞는 영화를 고르는 데 시간이 든다. 기존 협업 필터링은 콜드 스타트 문제가 있고, 리뷰는 사람이 직접 써야 한다. Mova는 LoRA 파인튜닝 모델로 개인화 추천을 제공하고, 크롤링 데이터를 Gemini가 분석해 AI 리뷰와 별점을 자동 생성한다.
+**영화 추천** — 수천 편 속에서 취향에 맞는 영화를 고르는 데 시간이 든다. 기존 협업 필터링은 콜드 스타트 문제가 있고, LLM 챗봇은 없는 극장과 상영 시간을 지어낸다. Mova는 직접 파인튜닝한 소형 모델이 도구를 골라 부르고, 사실은 데이터에서 가져와 답한다.
 
-**산책 경로** — 반려견과 산책할 때 그늘·결빙·반려견 출입 가능 여부를 고려한 경로를 찾기 어렵다. Gildle은 OSM 보행 그래프에 환경 점수를 매겨 계절·상황별 최적 산책 경로를 계산한다.
+**산책 경로** — 반려견과 산책할 때 그늘·경사·결빙·들를 곳을 고려한 경로를 찾기 어렵다. Gildle은 서울 전역 보행 그래프에 환경 점수와 건물 그림자를 입혀 계절·시간대별 경로 후보를 이유와 함께 보여 준다.
 
 ---
 
@@ -32,26 +32,29 @@ nav_order: 2
 
 ### [Mova — AI 영화 추천](/mova/)
 
-LoRA 파인튜닝 EXAONE-2.4B와 Gemini API 듀얼 백엔드로 개인화 영화 추천, AI 리뷰 자동 생성, 실시간 박스오피스 랭킹, AI 챗봇, 개봉 예정작 알림을 제공하는 영화 플랫폼.
+파인튜닝한 EXAONE 3.5 2.4B가 채팅의 판단(도구 선택)과 추천을 맡고, Gemini가 폴백과 리뷰 요약을 맡는 영화 플랫폼. 카탈로그 3,919편.
 
 | 핵심 기능 | 구현 |
 |-----------|------|
-| AI 추천 | LoRA 파인튜닝(EXAONE-2.4B AWQ) + Gemini 폴백 듀얼 백엔드, 취향 벡터 코사인 재정렬 |
-| AI 리뷰 | KOBIS·Google News·위키피디아 크롤링 → Gemini 평론가 톤 리뷰 + 긍부정 별점 자동 산정 |
-| 랭킹 | KOFIC API 일별/주간/월간 박스오피스 집계, 포스터·관객수·매출 시각화 |
-| 챗봇 | Gemini 기반 영화 추천·정보 맥락 대화, 사용자 시청 이력 반영 |
-| 대량 수집 | TMDB + KOFIC 합산 배치 파이프라인, 영화당 upsert → credits 백필 → RAG 인제스트 |
+| 채팅 에이전트 | 판단 모델 v9가 도구 10개 중 다음 행동을 고름. 인자 근거·반복 호출·호출 예산은 코드 가드 |
+| AI 추천 | EXAONE 3.5 2.4B LoRA(GGUF Q5_K_M) + Gemini 자동 폴백, 취향 벡터 코사인 재정렬 |
+| 봤어요 · 별점 | 채팅 한 문장으로 기록, 후보 되묻기 뒤의 선택을 하던 일로 이어 받음 |
+| 에디터 리뷰 | 뉴스 요약 → 리뷰 + 감정분석 별점 + 출처 링크 |
+| 랭킹 · 시간표 | KOFIC 박스오피스, 카카오 로컬·롯데시네마 상영 시간표 |
+| 대량 수집 | TMDB + KOFIC 배치 파이프라인, 영화당 upsert → credits 백필 → RAG 인제스트 |
 
 ### [Gildle — 반려견 산책 경로](/gildle/)
 
-OSM 보행 그래프에 가로수(나무 그늘)·결빙 위험·반려견 친화도 3축 환경 점수를 매긴 뒤, A* 알고리즘으로 시즌별 최적 경로를 계산하는 산책 경로 추천 서비스.
+서울 전역 보행 그래프에 나무·결빙·경사 점수와 건물 그림자를 입혀, 계절·시간대별 경로 후보를 계산하는 산책 경로 추천 서비스. 웹과 안드로이드 앱(길들)이 같은 기능을 제공한다.
 
 | 핵심 기능 | 구현 |
 |-----------|------|
-| 보행 그래프 | osmnx로 영등포구 도보 네트워크 추출 (1,178 노드 / 1,616 엣지) |
-| 환경 점수 | 서울 열린데이터(가로수·결빙 CSV, cp949) + 반려견 친화도 3축 배치 산정 |
-| 경로 추천 | A* 알고리즘, 시즌 모드(봄가을: 그늘 우선 / 겨울: 결빙 회피) 가중치 |
-| 시각화 | Leaflet 인터랙티브 지도, 구간별 점수 색상 코딩 + 경로 요약 패널 |
+| 보행 그래프 | 서울 전역 노드 164,740 · 간선 약 23만 (OSM / osmnx) |
+| 건물 그림자 | 건물 약 80만 동, 월별 12벌 × 13시간대 사전 계산 |
+| 경로 후보 | 빠른·그늘·푸른·편한·언덕길 + 고를 이유, 계절 모드 3종 |
+| 문장 추천 | EXAONE 7.8B가 조건을 읽고 규칙이 검증, A*가 계산 |
+| 산책 기록 | 위치 추적·저장·통계, 웹·앱 공통 |
+| 지도 | 네이버 지도(웹 JS v3 · Flutter SDK) |
 
 ---
 
@@ -169,27 +172,33 @@ adapter/outbound/pg/     ← PgRepository (ORM)
 
 ## 배포 환경
 
-### 이중 환경 운영
+### 운영 구성 (2026-09 현재)
 
 | 환경 | 구성 | 특이사항 |
 |------|------|----------|
-| **EC2 (프로덕션)** | Docker Compose (backend·auth·db·redis·nginx·cloudflared) | GPU 없음, 디스크 30GB |
-| **집 GPU (LoRA)** | WSL2 + RTX, systemd lora-server (:8200) | Cloudflare Tunnel로 EC2에 노출 |
-| **Vercel** | Next.js 프론트엔드 자동 배포 | main 브랜치 푸시 시 자동 빌드 |
+| **노트북 (프로덕션)** | k3s 파드(backend·auth·cloudflared) + Docker(db·redis) + systemd lora-server(:8200) + Ollama | RTX 4060 8GB. 꺼지면 API 전체가 내려가는 것을 감수한 구성 |
+| **데스크톱 (개발·학습 보조)** | k3s 개발 스택, lora-server | 상시 서버가 아니다 |
+| **Colab** | LoRA 학습 → 병합 → GGUF 양자화 | 노트북 GPU는 운영 전용이라 학습은 코랩에서 끝낸다 |
+| **Vercel** | Next.js 프론트엔드 | main 머지 시 자동 배포 |
+| **EC2** | 중지 보관 | 2026-09-03 노트북으로 이전. 30GB 디스크·GPU 부재가 이전 사유 |
+
+배포는 `./k8s/deploy.sh --external-db --build` 한 번 — `.env`를 Secret으로 변환해 주입하고 이미지를 다시 빌드해 롤아웃한다. `.env`가 없으면 스크립트가 즉시 실패하므로 compose 시절의 "빈 자격증명으로 DB 재생성" 사고는 구조적으로 재발하지 않는다.
 
 ### 추천 엔진 폴백
 
 ```
-GPU 가용 (기본)                     GPU 미가용
-─────────────                      ──────────
-RECOMMENDATION_BACKEND=lora         RECOMMENDATION_BACKEND=gemini
-lora_server:8200                    Gemini API
-    │                                   │
-    └─ Cloudflare Tunnel ──→ EC2        └──→ EC2
+추천 요청
+    │
+    ▼
+lora-server :8200 (같은 노트북 GPU, llama.cpp GGUF)
+    │
+    ├─ 성공 → 응답
+    └─ 실패 → Gemini API로 자동 전환
+              연속 2회 실패하면 60초 동안 바로 Gemini로 우회(서킷 브레이커) → 이후 자동 복귀
 ```
 
-- `RECOMMENDATION_BACKEND` env 하나로 전환, docker compose 재기동 왕복 약 8초
-- EC2 배포 후 항상 `docker exec <backend> printenv | grep RECOMMENDATION_BACKEND`로 확인
+- 초기엔 환경 변수(`RECOMMENDATION_BACKEND`)를 손으로 바꾸고 재기동했다(왕복 8초). 2026-08-26부터는 코드가 자동으로 전환한다.
+- 환경 변수는 수동 고정이 필요할 때만 쓴다.
 
 ---
 
@@ -207,23 +216,24 @@ Mova의 영화 도메인 테이블과 Gildle의 보행 그래프 테이블이 us
 │           ├── picks (추천 이력)                         │
 │           └── watchlist · user_actions                │
 │                                                       │
-│  market_chat_conversations ── market_chat_entries      │
+│  chat_conversations ── chat_messages                  │
 │  user_taste_vectors (리뷰 기반 취향 벡터, 768d)         │
-│  hub_knowledge (RAG 벡터, Gemini embedding)            │
+│  hub_knowledge (RAG 벡터, bge-m3 1024d, HNSW)          │
 ├───────────────────────────────────────────────────────┤
 │  users ──┬── user_identity (Google·Kakao·Naver OAuth) │
 │          └── groups                         [공유]     │
 ├─ Gildle ──────────────────────────────────────────────┤
-│  route_nodes (osm_id) ── route_edges                  │
-│      tree_score · hazard_score · dog_friendly_score   │
+│  walks (산책 기록·경로 좌표) · push_tokens             │
+│  route_nodes ── route_edges (초기 시범 데이터)          │
+│  * 서울 전역 그래프·그늘 표는 JSON 파일로 메모리 적재   │
 ├─ 관리 ────────────────────────────────────────────────┤
 │  visitor_activity · alembic_version                   │
 └───────────────────────────────────────────────────────┘
 ```
 
-- 마이그레이션: Alembic (36개 테이블, head `20260821_0001`)
-- Mova: movies 200+편 적재, actors 389 / characters 371 / movie_directors 40
-- Gildle: route_nodes 1,178 / route_edges 1,616 (3축 점수)
+- 마이그레이션: Alembic (리비전 42개, 테이블 42개, head `20260930_0001`)
+- Mova: movies 3,919편 · actors 21,551명 · tags 13,277개 · reviews 455건 · hub_knowledge 3,756건
+- Gildle: 보행 그래프 노드 164,740 · 간선 약 23만(`scored_edges.json`), 그늘 표 월별 12벌
 
 ---
 
@@ -233,25 +243,27 @@ Mova의 영화 도메인 테이블과 Gildle의 보행 그래프 테이블이 us
 
 | 항목 | 구현 |
 |------|------|
-| 웹 OAuth | Google · Kakao · Naver OAuth 2.0, RS256 JWT |
-| 모바일 OAuth | 카카오 모바일 로그인 (kapi 토큰 검증), HS256 JWT |
-| 세션 관리 | Redis (`auth:refresh:web:{jti}` / `auth:refresh:mobile:{userId}` 네임스페이스 분리) |
+| 인증 게이트웨이 | 별도 파드(`auth.suvisdev.cloud`) — 이메일 로그인·가입, 토큰 발급·갱신·폐기, RS256 JWT |
+| 웹 OAuth | Google · Kakao · Naver OAuth 2.0 |
+| 모바일 | 카카오 모바일 로그인(kapi 토큰 검증) + 이메일 가입, 회원 탈퇴 |
+| 웹 세션 | **httpOnly 쿠키**(access 7일 · refresh 14일). 토큰을 브라우저 저장소에 두지 않는다(2026-09-30 전환) |
+| 세션 저장 | Redis (`auth:refresh:web:{jti}` / `auth:refresh:mobile:{userId}` 네임스페이스 분리) |
 | 권한 | admin / user 역할, `require_admin` · `require_user` 공통 가드 |
-| 검증 폴백 | RS256 → HS256 이중 검증 (웹·모바일 토큰 호환) |
 
-### 3계층 토큰 전달
+### 쿠키 세션 (BFF)
 
 ```
-클라이언트 (Bearer Token)
-    │
-    ▼
-route.ts 프록시 (Authorization 헤더 전달)
-    │
-    ▼
-FastAPI (require_user / require_admin 가드)
-    │
-    └→ JWT 디코딩 → user_id 추출 → 소유권 검증
+브라우저 ── 쿠키 자동 전송 ──→ Next.js 프록시(same-origin)
+                                  │  쿠키의 access를 Bearer로 바꿔 전달
+                                  │  401이면 refresh로 한 번 갱신 후 재시도
+                                  ▼
+                              FastAPI (require_user / require_admin)
+                                  └→ JWT 디코딩 → user_id → 소유권 검증
 ```
+
+- 로그인은 Next.js 프록시가 게이트웨이를 대신 호출하고, 받은 토큰을 자기 도메인의 httpOnly 쿠키로 심는다. 게이트웨이는 다른 도메인이라 직접 심을 수 없다.
+- 브라우저 자바스크립트는 토큰을 읽을 수 없다 — 스크립트 공격(XSS)으로 토큰이 빠져나가지 않는다.
+- 화면의 "로그인됨" 표시는 브라우저 저장소의 표시용 정보다. 페이지를 열 때 쿠키가 유효한지 확인해 어긋나면 표시를 지운다.
 
 ### 보안 대응
 
@@ -259,7 +271,8 @@ FastAPI (require_user / require_admin 가드)
 |------|------|
 | IDOR | 전수 조사 5건 식별 → 전부 JWT 토큰 기반으로 전환, 취약점 0건 |
 | S3 미인증 접근 | 버킷 비공개 + presigned URL (1시간 만료)로만 접근 |
-| API 키 노출 | 환경변수 분리 (`.env` 단일 파일), `.env.auth` 격리 (RS256 개인키) |
+| 토큰 탈취(XSS) | 토큰을 localStorage에서 httpOnly 쿠키로 이전 |
+| API 키 노출 | 환경변수 분리 (`.env` 단일 파일 → k8s Secret), RS256 개인키 격리 |
 | Spoke 간 의존 | `import-linter` 자동 검사로 아키텍처 규칙 강제 |
 
 ---
@@ -268,10 +281,13 @@ FastAPI (require_user / require_admin 가드)
 
 | 영역 | 테스트 수 | 방법 |
 |------|----------|------|
-| Mova | 200+ | pytest, 유스케이스·리포지토리·API 레이어별 |
-| Gildle | 170+ | pytest, Clean Architecture 레이어별 단위·통합 |
+| Mova | 471 | pytest, 유스케이스·리포지토리·API 레이어별 |
+| Gildle | 257 | pytest, Clean Architecture 레이어별 단위·통합 |
+| Ontology(허브) · 인증 등 | 300+ | 에이전트 루프, RAG, 인증 게이트웨이 |
+| 전체 백엔드 | **1,043 passed** | `pytest -m "not gpu and not ollama"` |
+| 운영 회귀 하네스 | 단일턴 28 · 멀티턴 17 | 배포 전후 실제 채팅 API에 같은 질의를 보내 비교 |
 | 프론트엔드 | - | `pnpm type-check` (tsc --noEmit) + `pnpm lint` |
-| 전체 백엔드 | 545+ | `pytest -m "not gpu and not ollama"` |
+| 길들 앱 | - | `flutter analyze` + `flutter test` |
 
 ```bash
 # 일반 실행 (GPU·Ollama 불필요)
@@ -292,8 +308,8 @@ pnpm type-check
 
 - **증상**: 백엔드 전 요청 502
 - **원인**: `docker compose up -d`에서 `--env-file suvisdev/.env`를 빠뜨려 `${POSTGRES_USER}` 등이 빈 문자열로 치환, DB 컨테이너가 빈 자격증명으로 재생성
-- **해결**: CLAUDE.md에 필수 규칙으로 등록, 이후 동일 장애 0건
-- **교훈**: Docker Compose 환경변수 외부 주입 시 `.env-file` 누락은 무증상 실패를 유발 — CI 체크리스트에 포함
+- **해결**: CLAUDE.md에 필수 규칙으로 등록, 이후 k3s로 옮기면서 배포 스크립트가 `.env`를 Secret으로 변환(없으면 즉시 실패) — 구조적으로 재발 불가
+- **교훈**: 환경변수 외부 주입에서 파일 누락은 무증상 실패를 부른다. 규칙으로 막는 것보다 스크립트가 실패하게 만드는 편이 확실하다
 
 ### S3 Presigned URL 403
 
@@ -313,4 +329,11 @@ pnpm type-check
 
 - **증상**: backend·auth 컨테이너 빌드 중 디스크 풀
 - **원인**: 동일 Dockerfile(torch+CUDA)인데 이미지가 따로 태깅돼 중복 레이어 미공유
-- **해결**: `docker builder prune -a` + 순차 빌드로 임시 대응, 이미지 통합은 백로그
+- **해결**: `docker builder prune -a` + 순차 빌드로 임시 대응 → 2026-09-03 프로덕션을 노트북으로 옮기면서 문제 자체가 사라짐
+
+### 쿠키 세션 전환 뒤의 회귀 3건 (2026-09-30)
+
+- **증상**: 화면은 로그인 상태인데 "인증이 필요합니다" / 마이페이지가 로그인 화면으로 되돌아감 / 본문 없는 응답(204)이 500
+- **원인**: ① 전환 전에 로그인한 브라우저엔 표시만 있고 쿠키가 없음 ② 일괄 치환이 변수명 `request`만 잡아 `req`를 쓰는 프록시 9개를 놓침 ③ 프록시가 204 응답에 빈 본문을 실어 응답 생성이 실패
+- **해결**: 페이지를 열 때 쿠키 유효성 확인, 패턴이 아닌 전수 검색으로 잔여 0 확인, 204·205·304는 본문 없이 전달
+- **교훈**: 모든 요청이 지나가는 코드를 바꿨으면 200·401뿐 아니라 204·기존 로그인 사용자까지 확인한다

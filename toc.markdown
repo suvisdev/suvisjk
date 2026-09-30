@@ -14,7 +14,9 @@ nav_order: 1
 - [프로젝트 소개](/about/#프로젝트-정보)
 - [기술 스택](/about/#기술-스택)
 - [아키텍처 (모듈러 모놀리식 · Star Topology)](/about/#아키텍처)
+- [배포 환경](/about/#배포-환경)
 - [ERD · 데이터 모델](/about/#erd--데이터-모델)
+- [인증 · 보안](/about/#인증--보안)
 
 ## 2. [사업 개요](/overview/)
 
@@ -25,18 +27,19 @@ nav_order: 1
 ## 3. [Mova — AI 영화 추천](/mova/)
 
 - [주요 기능](/mova/#주요-기능)
-- [기능 요구 사항 (M-001 ~ M-008)](/mova/#기능-요구-사항)
-- [AI 파이프라인 (추천 엔진 · 리뷰 생성)](/mova/#ai-파이프라인)
+- [기능 요구 사항 (M-001 ~ M-010)](/mova/#기능-요구-사항)
+- [AI 파이프라인 (채팅 에이전트 · 추천 엔진 · 리뷰 생성)](/mova/#ai-파이프라인)
 - [기술 스택](/mova/#기술-스택)
 - [트러블슈팅](/mova/#트러블슈팅)
 
 ## 4. [Gildle — 산책 경로 추천](/gildle/)
 
 - [주요 기능](/gildle/#주요-기능)
-- [기능 요구 사항 (G-001 ~ G-007)](/gildle/#기능-요구-사항)
-- [데이터 파이프라인 (OSM · 환경 점수 · 경로 최적화)](/gildle/#데이터-파이프라인)
-- [점수 분포 (실측 데이터)](/gildle/#점수-분포-영등포구-실측)
-- [아키텍처 (Clean Architecture + DDD)](/gildle/#아키텍처-clean-architecture--ddd)
+- [기능 요구 사항 (G-001 ~ G-010)](/gildle/#기능-요구-사항)
+- [데이터 파이프라인 (보행 그래프 · 환경 점수 · 건물 그림자)](/gildle/#데이터-파이프라인)
+- [경로 계산](/gildle/#경로-계산)
+- [웹 · 앱](/gildle/#웹--앱)
+- [아키텍처 (Clean Architecture)](/gildle/#아키텍처-clean-architecture)
 - [트러블슈팅](/gildle/#트러블슈팅)
 
 ## 5. [개발 수행 지침](/guidelines/)
@@ -56,6 +59,7 @@ nav_order: 1
   - Sprint 3 — AI 추천 + 리뷰
   - Sprint 4 — Gildle + 보안
   - Sprint 5 — 고도화
+  - Sprint 6 — 온프레미스 · 에이전트 · v1 마감
 - [위험 관리 방안](/schedule/#위험-관리-방안)
 
 ## 7. [부록](/appendix/)

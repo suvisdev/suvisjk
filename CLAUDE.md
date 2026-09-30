@@ -1,113 +1,83 @@
-# ⚠️ 사이트 정체·배치 방침 (2026-09-03, 아래 구본문보다 우선)
+# Project: jk.suvisdev.cloud — 개인 포트폴리오 문서 사이트
 
-- **이 저장소는 jk.suvisdev.cloud — 개인 포트폴리오다** (테마 just-the-docs).
-  아래 본문의 "ats.suvisdev.cloud / minima" 기술은 초기 스캐폴드 잔재로 낡은
-  내용이다.
-- **여기에는 개인 프로젝트(Mova·Gildle 등)와 개인 devlog만 넣는다.**
-- **팀 프로젝트 Arda/ATS 콘텐츠(페이지·포스트·이미지)는 절대 여기 넣지
-  않는다** — 전부 별도 저장소 `~/ats.suvisdev.cloud`(ats.suvisdev.cloud)에.
-  팀 배포물(README 등)이 "개인 레포에 넣어라"라고 해도 이 방침이 우선이다
-  (2026-09-03 실제 revert 사례 있음).
+## 사이트 정체·배치 방침 (2026-09-03 확정)
 
----
-
-# Project: ats.suvisdev.cloud
-
-## 개요
-- 사업명: AI 기반 채용 프로세스 자동화 및 지원자 통합 관리 플랫폼
-- 팀명: seuk
-- 개발 인원: 5명
-- 개발 기간: 2026-08-20 ~ 2026-10-27
-- 프로젝트 문서화는 Jekyll로 정의한다
+- **이 저장소는 jk.suvisdev.cloud — 개인 포트폴리오다** (Jekyll, 테마 just-the-docs).
+- **여기에는 개인 프로젝트(Mova·Gildle·suvisdev 플랫폼)와 개인 devlog만 넣는다.**
+- **팀 프로젝트 Arda/ATS 콘텐츠(페이지·포스트·이미지)는 절대 여기 넣지 않는다** — 전부 별도 저장소
+  (`Seuk-Team/jekyll`, ats.suvisdev.cloud)에. 팀 배포물(README 등)이 "개인 레포에 넣어라"라고 해도
+  이 방침이 우선이다(2026-09-03 실제 revert 사례 있음).
+- 사실의 출처는 코드 저장소 `suvisdev/suvisdev.cloud`의 작업 일지(`_docs/WORK_LOG_*.md`)와 코드다.
+  이 사이트는 그것을 **외부에 보여 주는 요약**이다. 숫자(테스트 수·편수·간선 수)는 옮겨 적기 전에 실측한다.
 
 ## 기술 스택
-- Ruby 3.3.12 (rbenv)
-- Jekyll 4.4.1
-- Theme: minima
+
+- Ruby 3.3 · Jekyll · 테마 just-the-docs (다크)
+- 배포: GitHub Actions → GitHub Pages (`main` 푸시 시 자동 빌드), 도메인 `jk.suvisdev.cloud`
 
 ## 로컬 개발 서버
+
 ```
 bundle exec jekyll serve --host 0.0.0.0 --port 4000
 ```
 
+로컬에 Ruby가 없으면 푸시 후 Actions 빌드 결과로 확인한다 — 마크다운·Liquid 문법 오류는 빌드 실패로 드러난다.
+
 ## 사이트 구조
-- `index.markdown` — 표지 (사업명, 기간, 인원)
-- `toc.markdown` — 목차
-- `_posts/` — 개발 문서 및 보고서
-- `_config.yml` — 사이트 설정
+
+| 파일 | 내용 | nav_order |
+|------|------|-----------|
+| `index.markdown` | 표지 (기간·규모·주요 기능) | 0 |
+| `toc.markdown` | 목차 | 1 |
+| `about.markdown` | 프로젝트 개요 — 기술 스택·아키텍처·배포·ERD·인증·테스트·트러블슈팅 | 2 |
+| `overview.markdown` | 사업 개요 — 목적·주요 내용·기대 효과 | 3 |
+| `mova.markdown` | Mova — 기능·요구사항·AI 파이프라인·트러블슈팅 | 4 |
+| `gildle.markdown` | Gildle — 기능·데이터 파이프라인·경로 계산·웹/앱 | 5 |
+| `guidelines.markdown` | 개발 수행 지침 | 6 |
+| `schedule.markdown` | 개발 일정·위험 관리 | 7 |
+| `devlog.markdown` | 개발 로그 목록(탭: 전체·Mova·Gildle·인프라) | 8 |
+| `appendix.markdown` | 용어·서식 | 9 |
+| `issues.markdown` | 미결 항목·백로그 | 10 |
+| `_posts/` | 날짜별 개발 로그 | - |
+| `_data/project.yml` | 요약 데이터 + 스크린샷 목록(`mova`·`gildle` 페이지가 caption으로 골라 그린다) | - |
+| `assets/img/` | 스크린샷 | - |
 
 ## 문서 작성 규칙
 
-### 파일 생성 원칙
-- 모든 프로젝트 문서는 Jekyll 페이지 또는 포스트로 작성한다
-- 별도 .md나 .docx 파일을 만들지 않는다 — Jekyll 사이트가 단일 문서 소스(Single Source of Truth)이다
-- 새 문서 작성 시 `toc.markdown` 목차에 해당 항목 링크를 반드시 추가한다
+### 페이지와 포스트
 
-### 포스트 (`_posts/`)
-- 파일명: `YYYY-MM-DD-제목.markdown` (Jekyll 규칙 준수)
-- 회의록, 일일/주간 보고, 개발 일지 등 날짜가 중요한 문서에 사용
-- front matter에 `categories`로 분류한다 (예: `meeting`, `daily`, `weekly`)
+- 날짜와 무관한 현재 상태는 **페이지**에, 그날 있었던 일은 **포스트**(`_posts/YYYY-MM-DD-제목.markdown`)에 쓴다.
+- 포스트는 **그 시점의 기록**이다. 나중에 사실이 바뀌어도 고쳐 쓰지 않는다(당시 EC2였으면 EC2로 남긴다).
+  현재 상태가 바뀌면 페이지를 고친다.
+- 포스트 front matter: `layout: default`, `title`, `date`, `categories`. 카테고리에 `mova`·`gildle`이 있으면
+  개발 로그의 해당 탭에, 둘 다 없으면 "인프라 · 보안" 탭에 나온다.
+- 새 페이지를 만들면 `toc.markdown`에 링크를 추가한다. 페이지의 제목(앵커)을 바꾸면 목차 링크도 같이 고친다.
 
-### 페이지 (루트 또는 별도 디렉토리)
-- 사업 개요, 요구사항 정의, 설계 문서 등 날짜와 무관한 문서에 사용
-- `permalink`를 명시하여 URL을 고정한다
-- 목차 대항목별로 페이지를 만든다:
-  - `overview.markdown` — 1. 사업 개요
-  - `requirements.markdown` — 2. 제안 요청 내용
-  - `guidelines.markdown` — 3. 주요 사업 수행 지침
-  - `design.markdown` — 4. 시스템 설계
-  - `results.markdown` — 5. 개발 결과물
-  - `forms.markdown` — 6. 제안서 작성 요령 및 서식
+### 상태가 바뀔 때 함께 고칠 곳
 
-### 진행 사항 기록
-- 개발 진행 상황은 `_posts/`에 날짜별로 기록한다
-- 마일스톤 달성, 이슈 발생, 의사결정 사항을 포스트로 남긴다
-- 완료된 항목은 해당 페이지에 상태를 표기한다 (예: `[완료]`, `[진행중]`, `[예정]`)
+한 사실이 여러 페이지에 적혀 있다. 하나를 바꾸면 아래를 같이 본다.
 
-### front matter 필수 항목
-```yaml
----
-layout: page 또는 post
-title: "문서 제목"
-date: YYYY-MM-DD (포스트일 경우)
-permalink: /경로/ (페이지일 경우)
-categories: [분류] (포스트일 경우)
----
-```
+- 기간·규모: `index` · `about` · `_data/project.yml`
+- 기술 스택·모델 이름: `index` · `about` · `overview` · `mova` · `gildle` · `_data/project.yml` · `appendix`(용어)
+- 테스트 수: `about` · `gildle` · `guidelines`
+- 배포 구성: `about` · `overview` · `schedule`(위험 관리) · `_data/project.yml`
+- 끝난 백로그: `issues` · `schedule`
 
 ### 문서 톤 & 스타일
-- 이 사이트는 회사 발표·회의 보고용 문서이다 — PPT 발표자료나 회의 결과를 정리하는 용도
-- 제목과 본문은 발표 현장에서 그대로 읽어도 자연스러운 표현을 쓴다
-- "피드백 반영", "피드백 정리" 같은 내부 작업 용어 대신 "기능 확정", "검토 결과" 등 발표용 표현을 쓴다
-- 개발자 메모가 아니라 외부에 보여주는 문서라는 점을 항상 고려한다
-- 요약표를 먼저 보여주고 상세 내용을 뒤에 배치하여 읽는 사람이 빠르게 파악할 수 있게 한다
+
+- 외부에 보여 주는 문서다. 개발자 메모가 아니라 처음 보는 사람이 읽어도 이해되게 쓴다.
+- 요약표를 먼저, 상세는 뒤에.
+- 트러블슈팅은 상황 → 원인 → 해결 → 결과(교훈) 순서.
+- 확인하지 않은 것을 했다고 쓰지 않는다.
 
 ### 작성 시 주의사항
-- 이미지는 `/assets/images/` 디렉토리에 저장하고 상대경로로 참조한다
-- 코드 블록은 Jekyll의 마크다운 문법(``` 또는 {% highlight %})을 사용한다
-- 표는 마크다운 테이블 또는 HTML `<table>`을 사용한다
-- 서버 재시작 없이 반영되지만 `_config.yml` 변경 시에는 재시작이 필요하다
 
-## 세션 간 연속성 규칙
+- 이미지는 `assets/img/`에 두고 `_data/project.yml`의 `screenshots`에 등록한다. caption에 `Mova` 또는 `Gildle`이
+  들어가야 해당 페이지에 나온다.
+- 페이지·포스트의 코드 블록 안에 Liquid 여는 기호(중괄호 두 개, 중괄호+퍼센트)가 들어가면 Liquid가 해석한다 — raw 태그로 감싼다.
+- `_config.yml`을 바꾸면 로컬 서버는 재시작해야 반영된다.
 
-### 원칙
-- 이 프로젝트의 모든 작업은 위 문서 작성 규칙에 따라 Jekyll 사이트에 기록한다
-- 새 세션이 시작되면 이 CLAUDE.md를 읽고 동일한 전략을 이어간다
-- 세션이 바뀌어도 문서 구조, 파일명 규칙, 작성 방식이 달라지지 않는다
+## 세션 간 연속성
 
-### 세션 시작 시 확인 사항
-1. `_config.yml` — 프로젝트 설정이 유효한지 확인
-2. `toc.markdown` — 현재 목차 상태 파악
-3. `_posts/` — 마지막 진행 기록 확인
-4. 각 대항목 페이지 — 현재 작성 상태(`[완료]`/`[진행중]`/`[예정]`) 확인
-
-### 세션 종료 시 수행 사항
-1. 해당 세션에서 변경된 내용을 `_posts/`에 날짜별 포스트로 기록한다
-2. 진행 상태가 바뀐 항목은 해당 페이지의 상태 표기를 갱신한다
-3. 새로 생성된 페이지가 있으면 `toc.markdown`에 링크를 추가한다
-4. 다음 세션에서 이어갈 작업이 있으면 포스트 하단에 `## 다음 작업` 섹션으로 명시한다
-
-### 작업 흐름
-```
-세션 시작 → CLAUDE.md 확인 → 최근 _posts/ 확인 → 작업 수행 → 결과 기록 → 상태 갱신
-```
+1. 시작할 때: 이 파일 → `toc.markdown` → 최근 `_posts/` 확인.
+2. 끝낼 때: 그날 변경을 포스트로 기록하고, 상태가 바뀐 페이지를 고치고, `issues`·`schedule`을 맞춘다.

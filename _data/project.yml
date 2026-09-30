@@ -1,111 +1,116 @@
 name: "suvisdev"
 tagline: "AI 영화 추천(Mova)과 반려견 산책 경로(Gildle)를 하나의 모듈러 모놀리식 플랫폼에 통합"
-period: "2026.07 ~ 2026.09 (약 10주)"
+period: "2026.07.08 ~ 2026.09.30 (약 12주, v1 마감)"
 team_size: "1명 (개인 프로젝트)"
 my_role: "풀스택 개발 · ML 파이프라인 · 인프라 · 데이터 수집"
 
 problem: >-
-  (1) 영화 추천: 수백 편의 신작 속에서 취향에 맞는 영화를 고르는 데 시간이 든다.
-  기존 협업 필터링은 콜드 스타트 문제가 있고, 리뷰는 사람이 직접 써야 한다.
-  Mova는 LoRA 파인튜닝 모델로 개인화 추천을 제공하고,
-  크롤링 데이터를 Gemini가 분석해 AI 리뷰와 별점을 자동 생성한다.
-  (2) 산책 경로: 반려견과 산책할 때 그늘·결빙·반려견 출입 가능 여부를 고려한
-  경로를 찾기 어렵다. Gildle은 OSM 보행 그래프에 환경 점수를 매겨
-  계절·상황별 최적 산책 경로를 계산한다.
+  (1) 영화 추천: 수천 편 속에서 취향에 맞는 영화를 고르는 데 시간이 들고,
+  LLM 챗봇은 없는 극장과 상영 시간을 지어낸다.
+  Mova는 직접 파인튜닝한 소형 모델이 도구를 골라 부르고,
+  사실은 데이터에서 가져와 답한다.
+  (2) 산책 경로: 반려견과 산책할 때 그늘·경사·결빙·들를 곳을 고려한
+  경로를 찾기 어렵다. Gildle은 서울 전역 보행 그래프에 환경 점수와 건물 그림자를 입혀
+  계절·시간대별 경로 후보를 이유와 함께 보여 준다.
 
 sub_projects:
   - name: "Mova"
-    tagline: "AI 영화 추천 · 리뷰 · 랭킹"
+    tagline: "AI 영화 추천 · 채팅 에이전트 · 리뷰 · 랭킹"
     description: >-
-      LoRA 파인튜닝 EXAONE-2.4B와 Gemini API 듀얼 백엔드로
-      개인화 영화 추천, AI 리뷰 자동 생성, 실시간 박스오피스 랭킹,
-      AI 챗봇, 개봉 예정작 알림을 제공하는 영화 플랫폼.
+      파인튜닝한 EXAONE 3.5 2.4B가 채팅의 판단(도구 10개 중 선택)과 추천을 맡고
+      Gemini가 폴백과 리뷰 요약을 맡는 영화 플랫폼. 카탈로그 3,919편,
+      봤어요·별점 기록, 에디터 리뷰, 박스오피스 랭킹, 예매 시간표.
   - name: "Gildle"
-    tagline: "반려견 산책 경로 추천"
+    tagline: "반려견 산책 경로 추천 (웹 · 안드로이드 앱)"
     description: >-
-      OSM 보행 그래프에 가로수(나무 그늘)·결빙 위험·반려견 친화도
-      3축 환경 점수를 매긴 뒤, A* 알고리즘으로 시즌별 최적 경로를
-      계산하는 산책 경로 추천 서비스.
+      서울 전역 보행 그래프(간선 약 23만)에 수관·결빙·경사 점수와
+      건물 약 80만 동의 그림자(월별 × 시간대)를 입혀,
+      빠른·그늘·푸른·편한 길 후보를 이유와 함께 제시하는 산책 경로 추천 서비스.
 
 features:
+  - title: "영화 채팅 에이전트"
+    description: "판단 모델(EXAONE 3.5 2.4B LoRA)이 도구 10개 중 다음 행동을 고른다. 출연진·시간표·OTT 같은 사실은 코드 템플릿이 답하고, 인자 근거·반복 호출·호출 예산은 코드가 막는다."
   - title: "AI 맞춤 영화 추천"
-    description: "LoRA 파인튜닝 EXAONE-2.4B와 Gemini API 듀얼 백엔드. 사용자 취향 학습 기반 개인화 추천, GPU 미가용 시 Gemini 자동 폴백(전환 8초)."
-  - title: "AI 리뷰 자동 생성"
-    description: "KOBIS 박스오피스·Google 뉴스·위키피디아 자동 크롤링 → Gemini가 평론가 톤 리뷰 작성. 수집 자료의 긍부정 반응을 종합해 별점 산정."
+    description: "EXAONE 3.5 2.4B LoRA(GGUF)를 노트북 GPU에서 서빙. 실패하면 Gemini로 자동 전환하고(연속 2회 실패 시 60초 우회) 살아나면 자동 복귀한다."
+  - title: "봤어요 · 별점 · 취향"
+    description: "채팅 한 문장으로 기록하고 취향 기반 추천·비슷한 영화·취향 요약에 쓴다. 제목 일부만 말해도, 후보 중에서 골라도 이어진다."
+  - title: "에디터 리뷰 자동 생성"
+    description: "뉴스 요약으로 리뷰를 만들고 감정분석 LoRA로 별점을 매긴다. 근거가 된 기사 링크와 신뢰도 배지를 함께 보여 준다."
   - title: "박스오피스 랭킹 · 개봉 예정작"
-    description: "KOFIC API로 일별·주간·월간 한국 박스오피스 집계. TMDB API로 개봉 예정작 자동 갱신, 월별 그룹핑."
-  - title: "영화 AI 챗봇"
-    description: "Gemini 기반 영화 추천·정보 대화. 사용자 시청 이력과 취향을 반영한 맥락 대화."
-  - title: "소셜 로그인 · 인증"
-    description: "Google·Kakao·Naver OAuth 2.0 통합 인증. JWT 토큰, 역할 권한(admin/user), IDOR 방어 전수 적용."
-  - title: "보행 그래프 경로 추천"
-    description: "osmnx로 추출한 영등포구 도보 네트워크 1,600+ 엣지를 Leaflet 지도에 시각화. 나무 그늘·결빙 위험·반려견 친화도 3축 점수 기반 A* 최적 경로."
-  - title: "시즌 모드 · 구간별 시각화"
-    description: "봄/가을(그늘 우선)·겨울(결빙 회피) 모드에 따라 가중치 자동 전환. 경로를 점수별 색상으로 구간 표시, 평균 점수 요약 패널."
+    description: "KOFIC API로 일별·주간·월간 한국 박스오피스 집계. TMDB API로 개봉 예정작 자동 갱신."
+  - title: "산책 경로 후보"
+    description: "출발·도착을 찍으면 빠른·그늘·푸른·편한 길 후보를 고를 이유와 함께 제시. 건물 그림자를 월별 × 시간대로 미리 계산해 같은 구간도 시각에 따라 다른 길이 나온다."
+  - title: "문장으로 산책 추천 · 웹·앱 통일"
+    description: "\"40분 동안 3키로 편하게\" 같은 문장을 읽어 코스를 추천. Next.js 웹과 Flutter 앱이 같은 API·같은 기능·같은 표기를 쓴다."
+  - title: "인증 · 보안"
+    description: "Google·Kakao·Naver OAuth 2.0과 이메일 로그인, httpOnly 쿠키 세션, 역할 권한(admin/user), IDOR 방어 전수 적용."
 
 tech:
   - category: backend
-    items: ["Python 3.12", "FastAPI", "PostgreSQL (Neon)", "Redis", "SQLAlchemy 2.0 Async"]
+    items: ["Python 3.12", "FastAPI", "PostgreSQL 16 + pgvector", "Redis", "SQLAlchemy 2.0 Async", "Alembic"]
   - category: frontend
-    items: ["Next.js 16", "TypeScript 5.7", "React 19", "Tailwind CSS 4", "shadcn/ui", "Leaflet"]
+    items: ["Next.js 16", "TypeScript 5.7", "React 19", "Tailwind CSS 4", "shadcn/ui", "네이버 지도 JS v3"]
   - category: mobile
-    items: ["Flutter", "Dart"]
+    items: ["Flutter", "Dart", "Riverpod", "네이버 지도 SDK"]
   - category: ai
-    items: ["EXAONE-2.4B AWQ (LoRA fine-tuning)", "Google Gemini API", "sentence-transformers"]
+    items: ["EXAONE 3.5 2.4B LoRA (추천 GGUF · 판단 에이전트 v9)", "EXAONE 3.5 7.8B (문장 이해)", "Google Gemini API (폴백·요약)", "bge-m3 임베딩"]
   - category: data
-    items: ["TMDB API", "KOFIC/KOBIS API", "서울 열린데이터 (가로수·결빙)", "OpenStreetMap / osmnx"]
+    items: ["TMDB API", "KOFIC/KOBIS API", "카카오 로컬 API", "브이월드 건물", "OpenStreetMap / osmnx", "SRTM 고도", "서울 열린데이터"]
   - category: infra
-    items: ["Docker Compose", "AWS (EC2 · S3)", "Cloudflare Tunnel", "GitHub"]
+    items: ["k3s (노트북 온프레미스)", "Docker", "llama.cpp · Ollama", "Cloudflare Tunnel", "Vercel", "AWS S3"]
 
 architecture:
-  image: "/assets/img/architecture.svg"
   description: >-
-    모듈러 모놀리식 + 스타 토폴로지. ontology(Hub)가 공통 크롤링·AI 파이프라인·이벤트 버스를,
+    모듈러 모놀리식 + 스타 토폴로지. ontology(Hub)가 공통 AI 파이프라인·에이전트 루프·이벤트 버스를,
     mova·gildle·viewer(Spoke)가 각 도메인 로직을 담당한다.
-    Next.js 프론트가 FastAPI(EC2·Docker) API를 호출하고,
-    영화 추천은 LoRA 파인튜닝 서버(Cloudflare Tunnel)와 Gemini API 듀얼 백엔드로 서빙,
-    산책 경로는 OSM 그래프 + A* 알고리즘으로 계산한다.
+    Next.js 프론트(Vercel)가 Cloudflare Tunnel을 거쳐 노트북의 k3s 파드(FastAPI)를 호출하고,
+    영화 추천은 같은 노트북의 llama.cpp 서버(EXAONE LoRA GGUF)가, 실패하면 Gemini가 받는다.
+    산책 경로는 메모리에 올린 보행 그래프에서 A*로 계산한다.
     Flutter 모바일 앱은 동일 API를 공유한다.
 
 erd:
-  image: "/assets/img/erd.png"
   description: >-
-    Mova: movies·reviews·rankings·picks·chat 등 영화 도메인 테이블과
-    users·groups 인증 테이블. Gildle: route_edges·scored_edges 보행 그래프 테이블.
-    두 도메인이 users 테이블을 공유하되, ORM 메타데이터는 앱별로 분리.
+    Mova: movies·reviews·rankings·picks·chat_conversations·user_actions 등 영화 도메인 테이블과
+    users·groups 인증 테이블. Gildle: walks·push_tokens.
+    두 도메인이 users 테이블을 공유하되, ORM 메타데이터는 앱별로 분리. 테이블 42개.
 
 challenges:
-  - title: "Docker .env 미설정으로 DB 전면 장애"
-    situation: "docker compose up -d 시 --env-file suvisdev/.env를 빠뜨려 DB 컨테이너가 빈 자격증명으로 재생성"
-    cause: "compose 파일의 ${POSTGRES_USER} 등이 빈 문자열로 치환되며 기존 볼륨과 인증 불일치"
-    solution: "docker compose --env-file suvisdev/.env 명시를 CLAUDE.md 필수 규칙으로 등록, 팀 전체 적용"
-    result: "반복 사고 방지. 이후 동일 장애 0건"
-  - title: "LoRA 서버 ↔ Gemini 듀얼 백엔드 폴백"
-    situation: "GPU 노트북(LoRA 서버)이 꺼지거나 Cloudflare Tunnel이 끊기면 추천 API 전면 장애"
-    cause: "EXAONE-2.4B AWQ 모델이 로컬 GPU에서만 서빙 가능, EC2에는 GPU 없음"
-    solution: "RECOMMENDATION_BACKEND 환경변수로 lora/gemini 전환, docker compose 재기동 한 번으로 폴백(왕복 8초)"
-    result: "GPU 미가용 시에도 추천 서비스 무중단 제공"
+  - title: "챗봇이 없는 사실을 지어낸다"
+    situation: "\"누가 나와\"에 줄거리를 답하고, 없는 극장과 상영 시간을 말했다"
+    cause: "6칸 슬롯 양식에 자리가 없는 질문은 정보가 사라졌고, 사실 문장까지 LLM에게 쓰게 했다"
+    solution: "도구 호출 에이전트로 전환 — 판단은 파인튜닝한 2.4B, 사실은 코드 템플릿, 가드(인자 근거·반복·호출 예산)는 코드"
+    result: "평가셋 86에서 77, 운영 회귀 하네스 단일턴 28/28"
+  - title: "LoRA 서버 ↔ Gemini 자동 폴백"
+    situation: "GPU 서버가 내려가면 추천 API가 그대로 실패했다"
+    cause: "수동 환경 변수 전환에 의존했고, 폴백 어댑터를 만든 뒤에도 DI에 연결되지 않았다"
+    solution: "폴백 어댑터를 DI에 연결하고 서킷 브레이커(연속 2회 실패 시 60초 우회) 추가"
+    result: "GPU 장애에도 추천 무중단, 복구되면 자동 복귀"
   - title: "IDOR 취약점 5건 전수 수정"
     situation: "user_id를 경로·바디 파라미터로 받아 다른 사용자의 리소스에 접근 가능"
     cause: "초기 개발 시 user_id를 클라이언트 입력으로 신뢰, 토큰 기반 신원 확인 누락"
     solution: "전수 조사로 5건(mypage·profile·watchlist·picks·chat) 식별 후 전부 JWT 토큰 기반으로 전환"
     result: "모든 리소스 접근에 소유권 검증 적용, IDOR 취약점 0건"
-  - title: "EC2 30GB 디스크 부족 반복"
-    situation: "backend·auth 컨테이너가 동일한 무거운 Dockerfile(torch+CUDA)인데 이미지가 따로 태깅"
-    cause: "중복 레이어가 해제되지 않아 빌드 중 디스크 풀 발생"
-    solution: "docker builder prune -a 후 순차 빌드, 근본 해결(이미지 통합)은 백로그에 등록"
-    result: "빌드 성공률 안정화, 디스크 사용량 모니터링 추가"
+  - title: "웹 토큰을 httpOnly 쿠키로"
+    situation: "로그인 토큰이 브라우저 저장소에 있어 스크립트 공격으로 빠져나갈 수 있었다"
+    cause: "초기 구현의 편의 — 클라이언트가 토큰을 직접 헤더에 실었다"
+    solution: "Next.js 프록시가 쿠키를 읽어 백엔드 호출을 대행(BFF). 백엔드는 바꾸지 않았다"
+    result: "토큰이 스크립트에서 보이지 않는다. 전환 뒤 드러난 회귀 3건도 같은 날 수정"
+  - title: "EC2에서 노트북 온프레미스로"
+    situation: "EC2는 30GB 디스크로 빌드가 반복 실패했고 GPU가 없어 집 GPU를 터널로 불러 썼다"
+    cause: "torch 이미지가 디스크에 들어가지 않고, 백엔드와 GPU가 떨어져 있었다"
+    solution: "프로덕션을 GPU가 있는 노트북으로 옮기고 k3s로 운영, 배포 스크립트가 환경 변수를 Secret으로 주입"
+    result: "서버 비용 없이 백엔드와 GPU 추론이 한 기계에서 통신"
 
 links:
   repo: "https://github.com/suvisdev/suvisdev.cloud"
   demo: "https://suvisdev.cloud"
 
 screenshots:
-  - path: "/assets/img/screenshot-mova-main.png"
-    caption: "Mova 메인 — AI 추천 영화 목록"
+  - path: "/assets/img/screenshot-mova-movies.png"
+    caption: "Mova 영화 탭 — 인기 검색 영화와 장르별 목록"
+  - path: "/assets/img/screenshot-mova-title.png"
+    caption: "Mova 작품 상세 — 예고편 · 출연진 · 비슷한 영화"
   - path: "/assets/img/screenshot-mova-ranking.png"
     caption: "Mova 박스오피스 랭킹"
   - path: "/assets/img/screenshot-gildle-map.png"
-    caption: "Gildle 보행 그래프 지도 — 구간별 점수 시각화"
-  - path: "/assets/img/screenshot-gildle-route.png"
-    caption: "Gildle 경로 추천 — 시즌 모드 + 색상 코딩"
+    caption: "Gildle 지도 — 계절 모드 · 장소 검색 · 산책 시작"
