@@ -121,7 +121,7 @@ reviews 저장 (감정 라벨 · 뉴스 소스 수 · 출처 링크) → 상세 
 | 모바일 | Flutter · Dart |
 | AI/ML | EXAONE 3.5 2.4B LoRA(추천·판단 에이전트) · EXAONE 3.5 7.8B(이해·잡담) · Google Gemini(폴백·리뷰 요약) · pgvector RAG |
 | 데이터 | TMDB API · KOFIC/KOBIS API · 카카오 로컬(영화관) · 롯데시네마 시간표 · Google News · 위키피디아 |
-| 인프라 | 노트북 k3s · Docker(DB·Redis) · llama.cpp · Ollama · Cloudflare Tunnel · AWS S3 |
+| 인프라 | 집 서버·노트북 k3s · Docker(DB·Redis) · llama.cpp · Ollama · Tailscale · Cloudflare Tunnel · AWS S3 |
 
 ---
 
