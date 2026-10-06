@@ -40,7 +40,7 @@ Router(Schema) → Input Port(Schema→Dto) → Interactor(Schema→Command→Po
 
 - **Hub(ontology)**: 공통 이벤트·크롤링·AI 파이프라인. Spoke를 import하지 않는다.
 - **Spoke**: Hub만 import 가능. Spoke 간 직접 import 금지 — Hub 이벤트 버스 경유.
-- **`import-linter`** 로 커밋 시 자동 검사(계약 6개).
+- **`import-linter`** 로 커밋 시 자동 검사(계약 7개 — Hub 독립 · Spoke 간 독립 · Mova·Titanic·Gildle 도메인 순수성 등).
 
 ### 도메인 모델은 필요한 곳에만
 
