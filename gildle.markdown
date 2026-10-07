@@ -157,7 +157,7 @@ shade_scores_MM.json (12벌, 한 벌 13분 · 20MB)
 | 데이터 | OpenStreetMap / osmnx · 브이월드 건물 · 서울 열린데이터(가로수·결빙) · SRTM 고도 · 카카오 로컬 |
 | 알고리즘 | A* (가중 최단 경로) · 그리드 최근접 인덱스 · 태양 위치(NOAA 근사) · shapely STRtree |
 | LLM | EXAONE 3.5 7.8B (문장 이해, Ollama) |
-| 테스트 | pytest 257건 (레이어별 단위·통합) · `flutter analyze` / `flutter test` |
+| 테스트 | pytest 256건 (레이어별 단위·통합) · `flutter analyze` / `flutter test` |
 
 ---
 

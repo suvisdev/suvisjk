@@ -94,7 +94,7 @@ LLM이 판단하는 자리의 이름을 네 층으로 고정한다: 오케스트
 | 테스트 마커 | `gpu` (GPU 필요), `ollama` (Ollama 서버 필요) |
 | 일반 실행 | `pytest -m "not gpu and not ollama"` |
 | 프론트 검증 | `pnpm type-check` + `pnpm lint` |
-| 백엔드 테스트 | 1,043건 (Mova 471 · Gildle 257 · 허브·인증 등) |
+| 백엔드 테스트 | 1,077건 (Mova 484 · Gildle 256 · 허브·인증 등, 2026-10-07) |
 | 운영 회귀 하네스 | 채팅 단일턴 28질의 · 멀티턴 17장면 — 배포 전후 실제 API로 비교 |
 | 모델 평가 | 같은 평가셋(86행)으로 회차 비교, 내보내기 판단은 운영과 같은 GGUF로 재채점 |
 | 앱 검증 | `flutter analyze` + `flutter test` |

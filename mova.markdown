@@ -80,7 +80,7 @@ MovaChatAgent ── 판단 모델(EXAONE 3.5 2.4B LoRA, GGUF, Ollama) ──→
     ▼
 RAG 후보 (pgvector HNSW, hub_knowledge) + 태그 실매칭 → 품질 하한·시리즈당 1편
     │
-    ├─ lora-server :8200 (EXAONE 3.5 2.4B LoRA, llama.cpp GGUF Q5_K_M, 노트북 GPU)
+    ├─ lora-server :8200 (EXAONE 3.5 2.4B LoRA, llama.cpp GGUF Q5_K_M, 집 서버 GTX 1650)
     └─ 실패·서킷 오픈 시 Gemini API 폴백 (자동, 60초 쿨다운 후 복귀)
 ```
 

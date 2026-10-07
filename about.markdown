@@ -111,7 +111,8 @@ nav_order: 2
 프로덕션은 **집 서버와 GPU 노트북 두 대의 온프레미스**다(2026-10-05~06). DB·Redis·추천 모델 서버(lora-server)는
 상시 켜 둔 집 서버 한 곳에 두고, 두 기기 모두 k3s로 같은 백엔드를 띄운다. 노트북이 집 네트워크에 있으면 노트북이 서빙하고,
 꺼지거나 밖으로 나가면 약 30초 안에 집 서버가 넘겨받는다(판단기 두 개가 Cloudflare Tunnel 연결을 바꾼다). 노트북이 밖에
-있어도 Tailscale로 GPU(Ollama)만 집 서버에 빌려준다. 클라우드 분리안은 검토 뒤 기각했다 — 백엔드가 유휴에도 2GB RAM이라
+있어도 Tailscale로 GPU(Ollama)만 집 서버에 빌려준다. 단 검색용 임베딩(bge-m3)은 집 서버 CPU에 고정했다 — 질문 한 줄
+임베딩은 집 서버 직접 약 0.1초, 노트북 GPU를 거치면 네트워크 왕복 때문에 약 0.35초였다(2026-10-07 실측). 클라우드 분리안은 검토 뒤 기각했다 — 백엔드가 유휴에도 2GB RAM이라
 무료 인스턴스에 들어가지 않고, 백엔드↔GPU 지연이 늘어난다(2026-09-29).
 
 ### 모듈러 모놀리식 · Star Topology
@@ -177,7 +178,7 @@ adapter/outbound/pg/     ← PgRepository (ORM)
 
 | 환경 | 구성 | 특이사항 |
 |------|------|----------|
-| **집 서버 (상시)** | k3s 파드(backend·auth·cloudflared) + Docker(PostgreSQL·Redis, 유일) + lora-server(:8200) + Ollama(CPU 예비) | GTX 1650 SUPER 4GB. 이미지를 빌드하지 않는다(메모리 부족으로 DB가 죽은 적이 있다) |
+| **집 서버 (상시)** | k3s 파드(backend·auth·cloudflared) + Docker(PostgreSQL·Redis, 유일) + lora-server(:8200) + Ollama(CPU — 임베딩 상시·생성 예비) | GTX 1650 SUPER 4GB. 이미지를 빌드하지 않는다(메모리 부족으로 DB가 죽은 적이 있다) |
 | **노트북 (우선 서빙·GPU)** | k3s 파드 + Ollama(GPU) + 배포 러너 | RTX 4060 8GB. 집이면 우선 서빙, 밖이면 GPU만 Tailscale로 제공 |
 | **Colab** | LoRA 학습 → 병합 → GGUF 양자화 | 노트북 GPU는 운영 전용이라 학습은 코랩에서 끝낸다 |
 | **Vercel** | Next.js 프론트엔드 | main 머지 시 자동 배포 |
@@ -193,7 +194,7 @@ adapter/outbound/pg/     ← PgRepository (ORM)
 추천 요청
     │
     ▼
-lora-server :8200 (같은 노트북 GPU, llama.cpp GGUF)
+lora-server :8200 (집 서버 GTX 1650, llama.cpp GGUF)
     │
     ├─ 성공 → 응답
     └─ 실패 → Gemini API로 자동 전환
@@ -284,10 +285,10 @@ Mova의 영화 도메인 테이블과 Gildle의 보행 그래프 테이블이 us
 
 | 영역 | 테스트 수 | 방법 |
 |------|----------|------|
-| Mova | 471 | pytest, 유스케이스·리포지토리·API 레이어별 |
-| Gildle | 257 | pytest, Clean Architecture 레이어별 단위·통합 |
-| Ontology(허브) · 인증 등 | 300+ | 에이전트 루프, RAG, 인증 게이트웨이 |
-| 전체 백엔드 | **1,043 passed** | `pytest -m "not gpu and not ollama"` |
+| Mova | 484 | pytest, 유스케이스·리포지토리·API 레이어별 |
+| Gildle | 256 | pytest, Clean Architecture 레이어별 단위·통합 |
+| Ontology(허브) · 인증 등 | 330+ | 에이전트 루프, RAG, 인증 게이트웨이 |
+| 전체 백엔드 | **1,077 passed** | `pytest -m "not gpu and not ollama"` |
 | 운영 회귀 하네스 | 단일턴 28 · 멀티턴 17 | 배포 전후 실제 채팅 API에 같은 질의를 보내 비교 |
 | 프론트엔드 | - | `pnpm type-check` (tsc --noEmit) + `pnpm lint` |
 | 길들 앱 | - | `flutter analyze` + `flutter test` |
